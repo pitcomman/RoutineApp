@@ -1,0 +1,162 @@
+﻿@model RoutineApp.Models.User
+
+@{
+    ViewData["Title"] = "Change ProcessCode";
+}
+
+<br><br>
+<h1 class = "text-center text-uppercase font-weight-bolder">Change ProcessCode</h1>
+<hr></hr>
+
+
+<div class = "text-center">
+    <div class = "row">
+        <label class = "col-md-3">Upload an Excel</label>
+        <div class = "col-md6">
+            <input type = "file" id = "fuExcel"/>
+        </div>
+        <div class = "col-md-3">
+            <button id = "btnUpload" class = "btn btn-success">Upload</button>
+        </div>
+    </div>
+
+
+    <div class = "Search">
+
+        <div class="input-field">
+            <input id = "op-input" type="opid" placeholder="Operator ID" autocomplete="nope">
+        </div>
+        <button id = "btnGetOp" class = "btn btn-success">Search Operator</button>
+    </div>
+
+
+    <table class = "table" id = "table1">
+        <tr>
+            <th>OPID</th>
+            <th>Name</th>
+            <th>Email</th>
+        </tr>
+    </table>
+
+
+    @* <tr>
+        <td>Email</td>
+        <td>Name</td>
+        <td>Phone</td>
+    </tr> *@
+
+
+    @* <div id="data-table">
+    
+    </div> *@
+
+        @* <table id="html-data-table">
+            <tr>
+                <th>userId</th>
+                <th>id</th>
+                <th>title</th>
+                <th>completed</th>
+            </tr>
+            <tr>
+                <td>0101300000000</td>
+                <td>1150</td>
+                <td>Test 12 3</td>
+                <td>false</td>
+            </tr>
+        </table>  *@
+
+
+    <a>@ViewData["City"]</a>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $("#btnUpload").click(function(){
+
+            var formData = new FormData();
+            var fuUploadFile = document.getElementById("fuExcel");
+            var myFile = fuUploadFile.files[0];
+            formData.append("myExcelData", myFile);
+
+            $.ajax({
+                type:'POST',
+                url:'@Url.Action("ImportExcel", "Home")',
+                contentType: false,
+                processData: false,
+                data: formData,
+                dataType: 'Json',
+                success:function(data){
+                    console.log(data)
+                    console.log(data.value[0].name)
+                    console.log(data.value[0])
+
+                    var column = data.value[0]
+
+                    for(var key in column){
+                        console.log(key)
+                    }
+
+
+                    @* tableCreate(data.value[0]); *@
+
+                    @* var column = ["name", "email"] *@
+
+
+
+                    @* var header = data *@
+
+
+                    @* var jsonObject = JSON.parse(data); *@
+                    @* alert(jsonObject[0].Name); *@
+                }
+            })
+        })
+
+        $("#btnGetOp").click(function(){
+
+            var formData = new FormData();
+            formData.append("opid", "010130")
+            console.log(document.getElementById("op-input").value)
+            
+
+            var opid = document.getElementById("op-input").value
+
+            $.ajax({
+                type:'GET',
+                url:'@Url.Action("GetOperatorDetail", "Home")',
+                data: {opid:opid},
+                success:function(data){
+                    console.log(data)
+                }
+
+            })
+        })
+
+
+        @* function tableCreate() {
+            var body = document.getElementsByTagName('body')[0];
+            var tbl = document.createElement('table');
+            tbl.style.width = '100%';
+            tbl.setAttribute('border', '1');
+            var tbdy = document.createElement('tbody');
+            for (var i = 0; i < 3; i++) {
+                var tr = document.createElement('tr');
+                for (var j = 0; j < 2; j++) {
+                if (i == 2 && j == 1) {
+                    break
+                } else {
+                    var td = document.createElement('td');
+                    td.appendChild(document.createTextNode('\u0020'))
+                    i == 1 && j == 1 ? td.setAttribute('rowSpan', '2') : null;
+                    tr.appendChild(td)
+                }
+                }
+                tbdy.appendChild(tr);
+        }
+        tbl.appendChild(tbdy);
+        body.appendChild(tbl)
+        } *@
+
+    })
+</script>
+
