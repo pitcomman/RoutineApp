@@ -8,5 +8,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.17"/>
     <PackageReference Include="System.Text.Json" Version="6.0.4"/>
+    <PackageReference Include="Aspose.Cells" Version="22.7.0"/>
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001"/>
+    <PackageReference Include="DataTables.AspNet.AspNetCore" Version="2.0.2"/>
   </ItemGroup>
 </Project>

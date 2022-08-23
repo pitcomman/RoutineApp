@@ -34,10 +34,22 @@ namespace RoutineApp.Process
 
         }
 
-        public String API_GetOperatorDetailById(String opId)
+        public String API_GetOperatorDetailById(String opId, String opName)
         {
             WebClient request = new WebClient();
-            String operatorDetailUrl = "http://localhost/PitAPI/HRMS/EmployeeDetail?opid=" + opId;
+
+            String operatorDetailUrl = "http://localhost/PitAPI/HRMS/EmployeeDetail?" ;
+            if (!string.IsNullOrEmpty(opId))
+            {
+                operatorDetailUrl += "&opid="+ opId;
+            }
+
+            if (!string.IsNullOrEmpty(opName))
+            {
+                operatorDetailUrl += "&opName="+ opName;
+            }
+            
+            Console.WriteLine(operatorDetailUrl);
 
             try
             {
