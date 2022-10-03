@@ -48,7 +48,7 @@
 <body>
 
     <br><br>
-    <h1 class = "text-center text-uppercase font-weight-bolder">Change ProcessCode</h1>
+    <h1 class = "text-center text-uppercase font-weight-bolder">Change ProcessCode + @ViewBag.Role</h1>
     <hr></hr>
 
 
@@ -109,6 +109,13 @@
                 <input	id="op-input-MCR" type="text" placeholder="Operator ID">
                 <button id="btnAddMCR" type="submit" class="btn btn-success">Add</button>
             </form>
+
+            <select id="TRDI-Role">
+                <option val="">Select</option>
+                <option val="1">NCIM</option>
+                <option val="2">NCIMTP</option>
+            </select>
+
         </div>
     </div>
 
@@ -139,10 +146,6 @@
 
 <script>
     $(document).ready(function(){
-
-
-
-        
         $("#btnUploaded").click(function(){
 
             var formData = new FormData();
@@ -214,19 +217,31 @@
         $("#btnAddMCR").click(function(){
             var formData = new FormData();
             var opid = document.getElementById("op-input-MCR").value;
+            var role = document.getElementById("TRDI-Role").value
             console.log(opid);
+
+
             
             $.ajax({
                 type:'POST',
                 @* url:'http://localhost/PitAPI/HRMS/EmployeeDetail?opid=' + opid, *@
                 url:'@Url.Action("AddMCROperator", "Home")',
-                data: {opid:opid},
+                data: {opid:opid, role:role},
                 dataType: 'json',
                 success:function(data){
                     console.log(data)
                     var parsedData = JSON.parse(data)
-                    console.log(parsedData['EmployeeDetail'])
-                    JSONToHTMLTable(parsedData['EmployeeDetail'],"tblEmployee")
+                    console.log(parsedData['Result'])
+                    @* var test111 = parsedData['Result'][0]['AddOperator']
+                    console.log(test111) *@
+                    JSONToHTMLTable(parsedData['Result'],"tblEmployee")
+
+
+                    var keys = Object.keys(parsedData['Result'][0])
+                    alert("Success\n" + 
+                          keys[0] + ": " + parsedData['Result'][0]['AddOperator'] + "\n" + 
+                          keys[1] + ": " + parsedData['Result'][0]['AddOperatorRole'] + "\n")
+
                 }
             })
 

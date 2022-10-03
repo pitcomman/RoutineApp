@@ -63,6 +63,23 @@ namespace RoutineApp.Controllers
 
         public IActionResult ChangeProcessCode()
         {
+            // DataTable roles;
+            // List<string> roleList = new List<string>();
+
+            // RoutineApp.Process.MCR_AddOperator mcrOperator = new RoutineApp.Process.MCR_AddOperator();
+
+            // roles = mcrOperator.GetRole().Tables["Role"];
+
+            // foreach (var role in roles.Rows)
+            // {
+            //     roleList.Add(role.Value);
+            //     Console.WriteLine(role);
+                
+            // }
+
+
+            // ViewBag.Role = roleList;
+            
             return View();
         }
 
@@ -348,29 +365,76 @@ namespace RoutineApp.Controllers
         // }
 
         [HttpPost]
-        public JsonResult AddMCROperator(String opid)
+        public JsonResult AddMCROperator(string opid, string role)
         {
 
             Console.WriteLine("Welcome AddMCROperator : " + opid);
+            Console.WriteLine("Role:" + role);
             RoutineApp.Process.OperatorDetail_API API = new RoutineApp.Process.OperatorDetail_API();
             DataSet empDetail = (DataSet)JsonConvert.DeserializeObject(API.API_GetOperatorDetailById(opid, ""), (typeof(DataSet)));
 
             // DataTable dbTemp = empDetail.datatables[0]
 
-            
+            // If (empDetail.Rows.Count() = 0)
+            // {
+            //     return Json(JsonConvert.SerializeObject("{Result:Not found operator in system}"));
+            // }
 
-            Console.WriteLine("TableDetail:" + empDetail.Tables[0]);
+            string paramOpID = null;
+            string paramOpName = null;
+            string paramOpRole = role;
+            string paramOpLevel = "1";
 
-            Console.WriteLine("Winwin");
-                        // if (!string.IsNullOrEmpty(opId))
+            foreach (DataTable table in empDetail.Tables)
+            {
+                string[] keys = table.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
 
-            
+                 foreach (DataRow row in table.Rows)
+                {
+                    // object[] keys = row.ColumnName[0];
+                    object[] values = row.ItemArray;
 
-            // RoutineApp.Process.MCR_AddOperator mcrOperator = new RoutineApp.Process.MCR_AddOperator();
-            // mcrOperator.MCR_AddOperator_ProcessControl(empDetail);
+                    string[] fullName = values[2].ToString().Split(' ');
+
+                    paramOpID = row[keys[0]].ToString();
+                    paramOpName = fullName[0] + " " + fullName[1][0] + ".";
 
 
-            return Json(JsonConvert.SerializeObject(empDetail));
+                    Console.WriteLine("PIT:" + row[keys[0]]);
+                    Console.WriteLine("OPID:" + values[0]);
+                    Console.WriteLine("OPName:" + fullName[0] + " " + fullName[1][0] + ".");
+
+                    // Console.WriteLine("Data:" + keys[0] + values[0]);
+                    // Console.WriteLine("Data:" + keys[1] + values[1]);
+                    // Console.WriteLine("Data:" + keys[2] + values[2]);
+                    // Console.WriteLine("Data:" + keys[3] + values[3]);
+
+
+
+                }
+            }
+
+            if (string.IsNullOrEmpty(paramOpID))
+            {
+                return Json(JsonConvert.SerializeObject("{Result:Not found operator in system}"));
+            }
+
+            if (string.IsNullOrEmpty(paramOpRole))
+            {
+                return Json(JsonConvert.SerializeObject("{Result:OperatorName is empty}"));
+            }
+
+           
+            RoutineApp.Process.MCR_AddOperator mcrOperator = new RoutineApp.Process.MCR_AddOperator();
+
+            DataSet result = null;
+
+            result =  mcrOperator.MCR_AddOperator_ProcessControl(paramOpID, paramOpName, paramOpRole, paramOpLevel);
+            Console.WriteLine("Add Success");
+
+
+
+            return Json(JsonConvert.SerializeObject(result));
         }
 
 
